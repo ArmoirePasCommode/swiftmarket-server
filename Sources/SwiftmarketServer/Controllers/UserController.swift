@@ -14,10 +14,21 @@ struct UserController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> Response {
-        try CreateUserRequest.validate(content: req)
+        do {
+            try CreateUserRequest.validate(content: req)
+        } catch let error as ValidationsError {
+            throw Abort(.unprocessableEntity, reason: error.description)
+        }
+
         let createReq = try req.content.decode(CreateUserRequest.self)
         let user = User(username: createReq.username, email: createReq.email)
-        try await user.save(on: req.db)
+        
+        do {
+            try await user.save(on: req.db)
+        } catch {
+            // Fluent errors can be obscure, but for this project we'll assume coincidence = conflict
+            throw Abort(.conflict, reason: "A user with this username or email already exists.")
+        }
         
         let response = try UserResponse(user: user)
         return try await response.encodeResponse(status: .created, for: req)

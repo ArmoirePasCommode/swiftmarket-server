@@ -50,13 +50,14 @@ struct ListingController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> Response {
-        try CreateListingRequest.validate(content: req)
+        do {
+            try CreateListingRequest.validate(content: req)
+        } catch let error as ValidationsError {
+            throw Abort(.unprocessableEntity, reason: error.description)
+        }
+        
         let createReq = try req.content.decode(CreateListingRequest.self)
         
-        if createReq.price <= 0 {
-            throw Abort(.unprocessableEntity, reason: "Price must be strictly positive")
-        }
-
         guard let _ = try await User.find(createReq.sellerID, on: req.db) else {
             throw Abort(.badRequest, reason: "Seller not found")
         }

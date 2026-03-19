@@ -6,7 +6,7 @@ struct OfferController: RouteCollection {
         // POST /listings/:id/offers
         // GET  /listings/:id/offers
         let listings = routes.grouped("listings")
-        listings.group(":listingID") { listing in
+        listings.group(":id") { listing in
             listing.post("offers", use: createOffer)
             listing.get("offers", use: listOffers)
         }
@@ -22,7 +22,7 @@ struct OfferController: RouteCollection {
 
     @Sendable
     func createOffer(req: Request) async throws -> Response {
-        guard let listingID = req.parameters.get("listingID", as: UUID.self) else {
+        guard let listingID = req.parameters.get("id", as: UUID.self) else {
             throw Abort(.badRequest)
         }
 
@@ -56,7 +56,7 @@ struct OfferController: RouteCollection {
 
     @Sendable
     func listOffers(req: Request) async throws -> [OfferResponse] {
-        guard let listingID = req.parameters.get("listingID", as: UUID.self) else {
+        guard let listingID = req.parameters.get("id", as: UUID.self) else {
             throw Abort(.badRequest)
         }
 

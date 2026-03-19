@@ -8,7 +8,8 @@ struct CreateListingRequest: Content, Validatable {
     var sellerID: UUID
 
     static func validations(_ validations: inout Validations) {
-        validations.add("title", as: String.self, is: !.empty)
+        validations.add("title", as: String.self, is: !.empty, customFailureDescription: "title must not be empty")
+        validations.add("price", as: Double.self, is: .range(0.01...), customFailureDescription: "price must be greater than 0")
         validations.add("category", as: String.self, is: .in("electronics", "clothing", "furniture", "other"))
     }
 }

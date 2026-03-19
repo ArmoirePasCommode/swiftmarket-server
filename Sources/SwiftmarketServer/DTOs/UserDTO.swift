@@ -5,8 +5,8 @@ struct CreateUserRequest: Content, Validatable {
     var email: String
 
     static func validations(_ validations: inout Validations) {
-        validations.add("username", as: String.self, is: !.empty)
-        validations.add("email", as: String.self, is: .email)
+        validations.add("username", as: String.self, is: !.empty, customFailureDescription: "username must not be empty")
+        validations.add("email", as: String.self, is: .email, customFailureDescription: "email must be a valid email address")
     }
 }
 
