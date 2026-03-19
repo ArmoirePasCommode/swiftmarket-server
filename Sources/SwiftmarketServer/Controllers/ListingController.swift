@@ -87,7 +87,7 @@ struct ListingController: RouteCollection {
             .filter(\.$id == listingId)
             .with(\.$seller)
             .first() else {
-            throw Abort(.notFound)
+            throw Abort(.notFound, reason: "Listing not found.")
         }
         
         return try ListingResponse(listing: listing)
@@ -96,7 +96,7 @@ struct ListingController: RouteCollection {
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let listing = try await Listing.find(req.parameters.get("id"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Abort(.notFound, reason: "Listing not found.")
         }
         try await listing.delete(on: req.db)
         return .noContent

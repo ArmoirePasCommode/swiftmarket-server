@@ -49,6 +49,7 @@ struct OfferController: RouteCollection {
 
         try await offer.$buyer.load(on: req.db)
         try await offer.$listing.load(on: req.db)
+        try await offer.listing.$seller.load(on: req.db)
 
         let response = try OfferResponse(offer: offer)
         return try await response.encodeResponse(status: .created, for: req)

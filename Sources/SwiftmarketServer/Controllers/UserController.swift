@@ -43,7 +43,7 @@ struct UserController: RouteCollection {
     @Sendable
     func show(req: Request) async throws -> UserResponse {
         guard let user = try await User.find(req.parameters.get("id"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Abort(.notFound, reason: "User not found.")
         }
         return try UserResponse(user: user)
     }
@@ -51,7 +51,7 @@ struct UserController: RouteCollection {
     @Sendable
     func getListings(req: Request) async throws -> [ListingResponse] {
         guard let user = try await User.find(req.parameters.get("id"), on: req.db) else {
-            throw Abort(.notFound)
+            throw Abort(.notFound, reason: "User not found.")
         }
         
         let listings = try await Listing.query(on: req.db)
