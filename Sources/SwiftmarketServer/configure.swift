@@ -8,6 +8,7 @@ public func configure(_ app: Application) async throws {
 
     app.migrations.add(CreateUser())
     app.migrations.add(CreateListing())
+    app.migrations.add(CreateOffer())
 
     try await app.autoMigrate()
 
